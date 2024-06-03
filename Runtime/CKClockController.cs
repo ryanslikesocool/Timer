@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace ClockKit {
-	[Singleton(Persistent = true, Auto = true)]
+	[SingletonComponent(persistent = true, auto = true)]
 	internal sealed partial class CKClockController : MonoBehaviour {
 		// MARK: - Properties
 

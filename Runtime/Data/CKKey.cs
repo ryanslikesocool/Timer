@@ -12,7 +12,7 @@ namespace ClockKit {
 	/// Once a key has been removed from a queue with the <see cref="CKClock.RemoveDelegate(Queue, in CKKey)"/> and <see cref="CKClock.StopTimer(Queue, in CKKey)"/> functions, it becomes available for reuse by the queue.
 	/// </summary>
 	/// <remarks>
-	/// Two queues may contain the same key.  Always specify a queue in a function call when possible.
+	/// Two queues may contain a key with the same raw value.  Always specify a queue in a function call when possible.
 	/// </remarks>
 	public readonly struct CKKey : IEquatable<CKKey>, IComparable<CKKey> {
 		/// <summary>
