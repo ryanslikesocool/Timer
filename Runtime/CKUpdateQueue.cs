@@ -12,9 +12,9 @@ namespace ClockKit {
 		private Dictionary<CKKey, ICKTimer> timers;
 
 		private Dictionary<CKKey, ICKUpdateDelegate> updateDelegates;
-		private List<(int, CKKey)> updateDelegateOrder;
+		private List<UpdateDelegateOrder> updateDelegateOrder;
 
-		private List<(int, CKKey, ICKUpdateDelegate)> insertingUpdateDelegates;
+		private List<InsertingUpdateDelegate> insertingUpdateDelegates;
 		private List<CKKey> removingUpdateDelegates;
 
 		private float localTime;
@@ -41,9 +41,9 @@ namespace ClockKit {
 
 			this.timers = new Dictionary<CKKey, ICKTimer>();
 			this.updateDelegates = new Dictionary<CKKey, ICKUpdateDelegate>();
-			this.updateDelegateOrder = new List<(int, CKKey)>();
+			this.updateDelegateOrder = new List<UpdateDelegateOrder>();
 
-			this.insertingUpdateDelegates = new List<(int, CKKey, ICKUpdateDelegate)>();
+			this.insertingUpdateDelegates = new List<InsertingUpdateDelegate>();
 			this.removingUpdateDelegates = new List<CKKey>();
 
 			this.currentTimerKey = new CKKey(queue, CKKeyAssociation.Timer, 0);
@@ -83,8 +83,8 @@ namespace ClockKit {
 				);
 
 				if (updateDelegateOrder.Count > 0) {
-					foreach ((_, CKKey key) in updateDelegateOrder) {
-						updateDelegates[key].OnUpdate(instant);
+					foreach (UpdateDelegateOrder order in updateDelegateOrder) {
+						updateDelegates[order.key].OnUpdate(instant);
 					}
 				}
 
@@ -112,16 +112,16 @@ namespace ClockKit {
 				return;
 			}
 
-			foreach ((int priority, CKKey key, ICKUpdateDelegate callback) in insertingUpdateDelegates) {
-				InsertUpdateDelegate(priority, key, callback);
+			foreach (InsertingUpdateDelegate inserting in insertingUpdateDelegates) {
+				InsertUpdateDelegate(inserting);
 			}
 			insertingUpdateDelegates.Clear();
 
 			ValidateUpdateDelegateOrder();
 
-			void InsertUpdateDelegate(int priority, CKKey key, ICKUpdateDelegate callback) {
-				updateDelegates.Add(key, callback);
-				updateDelegateOrder.Add((priority, key));
+			void InsertUpdateDelegate(in InsertingUpdateDelegate inserting) {
+				updateDelegates.Add(inserting.key, inserting.updateDelegate);
+				updateDelegateOrder.Add(new UpdateDelegateOrder(inserting.priority, inserting.key));
 			}
 		}
 
@@ -139,21 +139,21 @@ namespace ClockKit {
 
 			void RemoveUpdateDelegate(CKKey key) {
 				updateDelegates.Remove(key);
-				if (updateDelegateOrder.FirstIndex(pair => pair.Item2 == key).TryGetValue(out int index)) {
+				if (updateDelegateOrder.FirstIndex(pair => pair.key == key).TryGetValue(out int index)) {
 					updateDelegateOrder.RemoveAt(index);
 				}
 			}
 		}
 
 		private void ValidateUpdateDelegateOrder() {
-			updateDelegateOrder.Sort(new Comparison<(int, CKKey)>((i1, i2) => i2.Item1.CompareTo(i1.Item1)));
+			updateDelegateOrder.Sort(new Comparison<UpdateDelegateOrder>((i1, i2) => i2.priority.CompareTo(i1.priority)));
 		}
 
 		// MARK: - Delegates
 
 		public CKKey AddUpdateDelegate(int priority, in ICKUpdateDelegate updateDelegate) {
 			CKKey key = RetrieveNextUpdateDelegateKey();
-			insertingUpdateDelegates.Add((priority, key, updateDelegate));
+			insertingUpdateDelegates.Add(new InsertingUpdateDelegate(priority, key, updateDelegate));
 			return key;
 		}
 
@@ -246,6 +246,33 @@ namespace ClockKit {
 
 			currentUpdateDelegateKey = resultKey;
 			return resultKey;
+		}
+
+		// MARK: - Supporting Data
+
+		private readonly struct UpdateDelegateOrder : IComparable<UpdateDelegateOrder> {
+			public readonly int priority;
+			public readonly CKKey key;
+
+			public UpdateDelegateOrder(int priority, in CKKey key) {
+				this.priority = priority;
+				this.key = key;
+			}
+
+			public readonly int CompareTo(UpdateDelegateOrder other)
+				=> this.priority.CompareTo(other.priority);
+		}
+
+		private readonly struct InsertingUpdateDelegate {
+			public readonly int priority;
+			public readonly CKKey key;
+			public readonly ICKUpdateDelegate updateDelegate;
+
+			public InsertingUpdateDelegate(int priority, in CKKey key, in ICKUpdateDelegate updateDelegate) {
+				this.priority = priority;
+				this.key = key;
+				this.updateDelegate = updateDelegate;
+			}
 		}
 	}
 }
