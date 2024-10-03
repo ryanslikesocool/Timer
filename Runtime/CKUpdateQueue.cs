@@ -139,7 +139,7 @@ namespace ClockKit {
 
 			void RemoveUpdateDelegate(CKKey key) {
 				updateDelegates.Remove(key);
-				if (updateDelegateOrder.FirstIndex(pair => pair.key == key).TryGetValue(out int index)) {
+				if (updateDelegateOrder.FirstIndex(pair => pair.key == key) is int index) {
 					updateDelegateOrder.RemoveAt(index);
 				}
 			}
