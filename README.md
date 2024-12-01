@@ -1,15 +1,12 @@
 # ClockKit
-Timer functions for Unity
+Timer management system for Unity + C#.
 
-## Installation
-**Recommended Installation** (Unity Package Manager)
-- "Add package from git URL..."
-- `https://github.com/ryanslikesocool/ClockKit.git`
-
-**Alternate Installation** (Not recommended)
-- Get the latest [release](https://github.com/ryanslikesocool/ClockKit/releases)
-- Open with the desired Unity project
-- Import into the Plugins folder
+## Installation (Unity Package Manager)
+- Select "Add package from git URL..." from the plus menu in the package manager window.
+- Paste the package's git url.
+```
+https://github.com/ryanslikesocool/ClockKit.git
+```
 
 ## Usage
 ClockKit will automatically create a game object and attach scripts the first time it's accessed.

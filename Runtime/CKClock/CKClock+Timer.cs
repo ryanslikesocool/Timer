@@ -1,7 +1,7 @@
 // Developed With Love by Ryan Boyer https://ryanjboyer.com <3
 
 using System.Collections.Generic;
-using Foundation;
+using System.Linq;
 
 namespace ClockKit {
 	public static partial class CKClock {
@@ -62,7 +62,7 @@ namespace ClockKit {
 		/// <returns>In order for each key - <see langword="true"/> if a queue contains a timer with the given key; <see langword="false"/> otherwise.</returns>
 		public static IEnumerable<bool> HasTimers(
 			IEnumerable<CKKey> keys
-		) => keys.Map(key => HasTimer(key));
+		) => keys.Select(key => HasTimer(key));
 
 		/// <summary>
 		/// Are the given keys active on any queues and associated with timers?
@@ -71,7 +71,7 @@ namespace ClockKit {
 		/// <returns>In order for each key - <see langword="true"/> if a queue contains a timer with the given key; <see langword="false"/> otherwise.</returns>
 		public static IEnumerable<bool> HasTimers(
 			IEnumerable<CKKey?> keys
-		) => keys.Map(key => HasTimer(key));
+		) => keys.Select(key => HasTimer(key));
 
 		// MARK: - Stop Timer
 
@@ -103,7 +103,7 @@ namespace ClockKit {
 		public static IEnumerable<bool> StopTimers(
 			in IEnumerable<CKKey> keys
 		)
-			=> keys.Map(key => StopTimer(key));
+			=> keys.Select(key => StopTimer(key));
 
 		/// <summary>
 		/// Stop multiple timers on all queues.
@@ -113,7 +113,7 @@ namespace ClockKit {
 		public static IEnumerable<bool> StopTimers(
 			in IEnumerable<CKKey?> keys
 		)
-			=> keys.Map(key => StopTimer(key));
+			=> keys.Select(key => StopTimer(key));
 
 		/// <summary>
 		/// Stop all timers on a given queue.

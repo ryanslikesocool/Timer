@@ -1,7 +1,7 @@
 // Developed With Love by Ryan Boyer https://ryanjboyer.com <3
 
 using System.Collections.Generic;
-using Foundation;
+using System.Linq;
 
 namespace ClockKit {
 	public static partial class CKClock {
@@ -89,7 +89,7 @@ namespace ClockKit {
 		public static IEnumerable<bool> HasUpdateDelegates(
 			in IEnumerable<CKKey> keys
 		)
-			=> keys.Map(key => HasUpdateDelegate(key));
+			=> keys.Select(key => HasUpdateDelegate(key));
 
 		/// <summary>
 		/// Are the given keys active on any queues and associated with update delegates?
@@ -99,7 +99,7 @@ namespace ClockKit {
 		public static IEnumerable<bool> HasUpdateDelegates(
 			in IEnumerable<CKKey?> keys
 		)
-			=> keys.Map(key => HasUpdateDelegate(key));
+			=> keys.Select(key => HasUpdateDelegate(key));
 
 		// MARK: - Remove Delegate
 

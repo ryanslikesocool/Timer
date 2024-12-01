@@ -42,10 +42,12 @@ namespace ClockKit {
 			}
 
 			float localTime = instant.localTime - StartTime;
+			float percent = localTime / Duration;
+			percent =
 #if UNITY_MATHEMATICS
-			float percent = math.saturate(localTime / Duration);
+				math.saturate(percent);
 #else
-            float percent = Mathf.Clamp(percent, 0f, 1f);
+            	Mathf.Clamp(percent, 0.0f, 1.0f);
 #endif
 			Value value = animation.Evaluate(localTime, percent);
 

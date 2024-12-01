@@ -3,7 +3,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using Foundation;
+//using Foundation;
 
 namespace ClockKit {
 	internal sealed class CKUpdateQueue {
@@ -108,7 +108,7 @@ namespace ClockKit {
 		// MARK: - Utility
 
 		private void FinalizeUpdateDelegateInsertion() {
-			if (insertingUpdateDelegates.IsEmpty()) {
+			if (insertingUpdateDelegates.Count == 0) {
 				return;
 			}
 
@@ -126,7 +126,7 @@ namespace ClockKit {
 		}
 
 		private void FinalizeUpdateDelegateRemoval() {
-			if (removingUpdateDelegates.IsEmpty()) {
+			if (removingUpdateDelegates.Count == 0) {
 				return;
 			}
 
@@ -139,8 +139,12 @@ namespace ClockKit {
 
 			void RemoveUpdateDelegate(CKKey key) {
 				updateDelegates.Remove(key);
-				if (updateDelegateOrder.FirstIndex(pair => pair.key == key) is int index) {
-					updateDelegateOrder.RemoveAt(index);
+
+				for (int i = 0; i < updateDelegateOrder.Count; i++) {
+					if (updateDelegateOrder[i].key == key) {
+						updateDelegateOrder.RemoveAt(i);
+						break;
+					}
 				}
 			}
 		}

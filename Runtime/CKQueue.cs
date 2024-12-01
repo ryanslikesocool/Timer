@@ -18,7 +18,7 @@ namespace ClockKit {
 		LateUpdate,
 
 		/// <summary>
-		/// The default update queue (<see cref="Update"/>).
+		/// The default update queue, equivalent to <see cref="Update"/>.
 		/// </summary>
 		Default = Update,
 	}
